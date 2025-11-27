@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#F73859', // Example color from Neat, will refine
+        primary: '#DC2626', // Red-600 - Color fuerte y visible
         secondary: '#283048',
         background: '#f8f9fa',
       },

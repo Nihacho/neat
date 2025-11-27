@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus, Filter } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { Modal } from '../components/Modal';
 import { AssetTable } from '../features/assets/components/AssetTable';
+import { AssetForm } from '../features/assets/components/AssetForm';
 import { useAssets } from '../features/assets/hooks';
 
 export function AssetsPage() {
   const { data: assets, isLoading } = useAssets();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSuccess = () => {
+    // Optionally show a success message
+    alert('✅ Activo creado exitosamente');
+  };
 
   return (
     <div className="space-y-6">
@@ -20,7 +28,7 @@ export function AssetsPage() {
             <Filter size={16} className="mr-2" />
             Filtros
           </Button>
-          <Button>
+          <Button onClick={() => setIsModalOpen(true)}>
             <Plus size={16} className="mr-2" />
             Nuevo Activo
           </Button>
@@ -30,6 +38,18 @@ export function AssetsPage() {
       <Card>
         <AssetTable assets={assets} isLoading={isLoading} />
       </Card>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Registrar Nuevo Activo"
+        size="md"
+      >
+        <AssetForm
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={handleSuccess}
+        />
+      </Modal>
     </div>
   );
 }

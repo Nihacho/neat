@@ -31,8 +31,8 @@ export function PrestamosPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Gestión de Préstamos</h2>
-          <p className="text-sm text-gray-500">Control de préstamos y devoluciones</p>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-red-900 to-red-700 bg-clip-text text-transparent">Gestión de Préstamos</h2>
+          <p className="text-sm text-gray-500 mt-1">Control de préstamos y devoluciones</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" size="sm">

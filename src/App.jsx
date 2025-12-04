@@ -7,6 +7,8 @@ import { AssetsPage } from './pages/AssetsPage';
 import { PersonasPage } from './pages/PersonasPage';
 import { PrestamosPage } from './pages/PrestamosPage';
 import { UbicacionesPage } from './pages/UbicacionesPage';
+import { ReportesPage } from './pages/ReportesPage';
+import { UsuariosPage } from './pages/UsuariosPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +31,8 @@ function App() {
             <Route path="personas" element={<PersonasPage />} />
             <Route path="prestamos" element={<PrestamosPage />} />
             <Route path="ubicaciones" element={<UbicacionesPage />} />
+            <Route path="reportes" element={<ReportesPage />} />
+            <Route path="usuarios" element={<UsuariosPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

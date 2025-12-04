@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, MapPin } from 'lucide-react';
 import { Badge } from '../../../components/Badge';
 import { Button } from '../../../components/Button';
 import { format } from 'date-fns';
@@ -23,20 +23,23 @@ export function LoanTable({ loans, isLoading, onReturn }) {
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            <th className="px-6 py-4">Código</th>
-            <th className="px-6 py-4">Activo</th>
-            <th className="px-6 py-4">Persona</th>
-            <th className="px-6 py-4">Fecha Préstamo</th>
-            <th className="px-6 py-4">Fecha Devolución</th>
-            <th className="px-6 py-4">Estado</th>
-            <th className="px-6 py-4 text-right">Acciones</th>
+          <tr className="border-b border-gray-100 bg-gray-50">
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Código</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Activo</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Persona</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Préstamo</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Esperada</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
           {loans.map((loan) => {
             const status = statusMap[loan.estado_prestamo];
             const StatusIcon = status.icon;
+            const isOverdue = loan.fecha_devolucion_esperada &&
+              new Date(loan.fecha_devolucion_esperada) < new Date() &&
+              loan.estado_prestamo === 'pendiente';
 
             return (
               <tr key={loan.codigo_prestamo} className="hover:bg-gray-50/50 transition-colors">
@@ -63,10 +66,16 @@ export function LoanTable({ loans, isLoading, onReturn }) {
                   {format(new Date(loan.fecha_prestamo), 'dd/MM/yyyy HH:mm')}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-600">
-                  {loan.fecha_devolucion
-                    ? format(new Date(loan.fecha_devolucion), 'dd/MM/yyyy HH:mm')
-                    : '-'
-                  }
+                  {loan.fecha_devolucion_esperada ? (
+                    <div>
+                      <div>{format(new Date(loan.fecha_devolucion_esperada), 'dd/MM/yyyy HH:mm')}</div>
+                      {isOverdue && (
+                        <div className="text-xs text-red-600 font-medium mt-1">¡Atrasado!</div>
+                      )}
+                    </div>
+                  ) : (
+                    <span className="text-gray-400">Sin fecha límite</span>
+                  )}
                 </td>
                 <td className="px-6 py-4">
                   <Badge variant={status.variant} className="inline-flex items-center gap-1">
@@ -75,7 +84,7 @@ export function LoanTable({ loans, isLoading, onReturn }) {
                   </Badge>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  {loan.estado_prestamo === 'pendiente' && (
+                  {(loan.estado_prestamo === 'pendiente' || loan.estado_prestamo === 'retraso') && (
                     <Button
                       size="sm"
                       variant="outline"

@@ -7,8 +7,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#DC2626', // Red-600 - Color fuerte y visible
-        secondary: '#283048',
+        primary: '#8B1538', // Univalle Burgundy/Wine - Color institucional
+        secondary: '#6B1229', // Darker burgundy for accents
         background: '#f8f9fa',
       },
       fontFamily: {
@@ -18,3 +18,5 @@ export default {
   },
   plugins: [],
 }
+
+

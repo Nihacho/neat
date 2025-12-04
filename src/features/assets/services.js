@@ -46,5 +46,15 @@ export const assetService = {
 
     if (error) throw error;
     return data;
+  },
+
+  async delete(id) {
+    const { error } = await supabase
+      .from('activo')
+      .delete()
+      .eq('codigo_activo', id);
+
+    if (error) throw error;
   }
 };
+

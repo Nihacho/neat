@@ -20,6 +20,8 @@ export function AssetTable({ assets, isLoading, onEdit, onDelete }) {
     return <div className="p-8 text-center text-gray-500">No hay activos registrados.</div>;
   }
 
+  const hasActions = onEdit || onDelete;
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
@@ -30,7 +32,9 @@ export function AssetTable({ assets, isLoading, onEdit, onDelete }) {
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Categoría</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
             <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Ubicación</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+            {hasActions && (
+              <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Acciones</th>
+            )}
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
@@ -64,27 +68,33 @@ export function AssetTable({ assets, isLoading, onEdit, onDelete }) {
                   <span className="text-gray-400 italic">Sin ubicación</span>
                 )}
               </td>
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onEdit(asset)}
-                    className="flex items-center gap-1"
-                  >
-                    <Edit size={14} />
-                    Editar
-                  </Button>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => onDelete(asset.codigo_activo)}
-                    className="flex items-center gap-1"
-                  >
-                    <Trash2 size={14} />
-                  </Button>
-                </div>
-              </td>
+              {hasActions && (
+                <td className="px-6 py-4 text-right">
+                  <div className="flex items-center justify-end gap-2">
+                    {onEdit && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onEdit(asset)}
+                        className="flex items-center gap-1"
+                      >
+                        <Edit size={14} />
+                        Editar
+                      </Button>
+                    )}
+                    {onDelete && (
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        onClick={() => onDelete(asset.codigo_activo)}
+                        className="flex items-center gap-1"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    )}
+                  </div>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

@@ -1,7 +1,10 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { DashboardLayout } from './layouts/DashboardLayout';
+import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AssetsPage } from './pages/AssetsPage';
 import { PersonasPage } from './pages/PersonasPage';
@@ -23,19 +26,28 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<DashboardPage />} />
-            <Route path="activos" element={<AssetsPage />} />
-            <Route path="personas" element={<PersonasPage />} />
-            <Route path="prestamos" element={<PrestamosPage />} />
-            <Route path="ubicaciones" element={<UbicacionesPage />} />
-            <Route path="reportes" element={<ReportesPage />} />
-            <Route path="usuarios" element={<UsuariosPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<LoginPage />} />
+
+            {/* Protected Routes */}
+            <Route path="/" element={<ProtectedRoute requiredLevel={2}><DashboardLayout /></ProtectedRoute>}>
+              <Route index element={<DashboardPage />} />
+              <Route path="activos" element={<AssetsPage />} />
+              <Route path="personas" element={<ProtectedRoute requiredLevel={1}><PersonasPage /></ProtectedRoute>} />
+              <Route path="prestamos" element={<ProtectedRoute requiredLevel={1}><PrestamosPage /></ProtectedRoute>} />
+              <Route path="ubicaciones" element={<ProtectedRoute requiredLevel={1}><UbicacionesPage /></ProtectedRoute>} />
+              <Route path="reportes" element={<ProtectedRoute requiredLevel={1}><ReportesPage /></ProtectedRoute>} />
+              <Route path="usuarios" element={<ProtectedRoute requiredLevel={1}><UsuariosPage /></ProtectedRoute>} />
+            </Route>
+
+            {/* Redirect unknown routes to login */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

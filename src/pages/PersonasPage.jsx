@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { Badge } from '../components/Badge';
 import { supabase } from '../lib/supabase';
+import { authService } from '../features/auth/authService';
 
 const TIPO_PERSONA_CONFIG = {
   docente: {
@@ -69,7 +70,7 @@ export function PersonasPage() {
   // Save mutation
   const saveMutation = useMutation({
     mutationFn: async (personaData) => {
-      const { carnet, nombre, telefono, correo, tipo_persona, ...extraData } = personaData;
+      const { carnet, nombre, telefono, correo, tipo_persona, password, ...extraData } = personaData;
       const isUpdate = editingPersona !== null;
 
       // Save to persona table
@@ -102,9 +103,16 @@ export function PersonasPage() {
           await supabase.from('estudiante').delete().eq('carnet', carnet);
         }
 
+        // Hash password if provided for funcionario
+        let dataToInsert = { carnet, ...extraData };
+        if (tipo_persona === 'funcionario' && password) {
+          const password_hash = await authService.hashPassword(password);
+          dataToInsert.password_hash = password_hash;
+        }
+
         const { error: specificError } = await supabase
           .from(specificTable)
-          .insert({ carnet, ...extraData });
+          .insert(dataToInsert);
 
         if (specificError) throw specificError;
       }
@@ -357,6 +365,7 @@ function PersonaModal({ isOpen, onClose, persona, onSave, isLoading }) {
     cargo: '',
     area_trabajo: '',
     nivel_permiso: 1,
+    password: '', // Password for funcionario
     // Estudiante
     carrera: '',
     semestre: '',
@@ -394,6 +403,7 @@ function PersonaModal({ isOpen, onClose, persona, onSave, isLoading }) {
         cargo: '',
         area_trabajo: '',
         nivel_permiso: 1,
+        password: '',
         carrera: '',
         semestre: '',
         ru: '',
@@ -425,6 +435,10 @@ function PersonaModal({ isOpen, onClose, persona, onSave, isLoading }) {
         area_trabajo: formData.area_trabajo,
         nivel_permiso: parseInt(formData.nivel_permiso),
       };
+      // Add password if provided
+      if (formData.password) {
+        extraData.password = formData.password;
+      }
     } else if (formData.tipo_persona === 'estudiante') {
       extraData = {
         carrera: formData.carrera,
@@ -585,18 +599,37 @@ function PersonaModal({ isOpen, onClose, persona, onSave, isLoading }) {
                 />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nivel de Permiso (1-2)
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="2"
-                value={formData.nivel_permiso}
-                onChange={(e) => setFormData({ ...formData, nivel_permiso: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nivel de Permiso (1-2)
+                </label>
+                <select
+                  value={formData.nivel_permiso}
+                  onChange={(e) => setFormData({ ...formData, nivel_permiso: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                >
+                  <option value="1">1 - Administrador (Acceso Completo)</option>
+                  <option value="2">2 - Solo Lectura</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Contraseña {persona && <span className="text-xs text-gray-500">(dejar vacío para no cambiar)</span>}
+                </label>
+                <input
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-blue-800">
+                <strong>Nota:</strong> La contraseña se usará para el login del funcionario. Nivel 1 tiene acceso completo, Nivel 2 solo puede ver activos.
+              </p>
             </div>
           </div>
         )}

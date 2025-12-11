@@ -53,7 +53,7 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
+    { icon: Github, href: 'https://github.com/Nihacho/neat', label: 'GitHub' },
     { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
     { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
   ];
@@ -183,14 +183,25 @@ export function Footer() {
               <li className="flex items-center gap-3 text-sm text-gray-400">
                 <Phone size={16} className="text-red-400 flex-shrink-0" />
                 <a href="tel:+59144444444" className="hover:text-red-400 transition-colors">
-                  +591 4 444 4444
+                  +591 72792030
+                </a>
+                <a href="tel:+59144444444" className="hover:text-red-400 transition-colors">
+                  +591 63916139
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm text-gray-400">
                 <Mail size={16} className="text-red-400 flex-shrink-0" />
                 <a href="mailto:activos@univalle.edu" className="hover:text-red-400 transition-colors">
-                  activos@univalle.edu
+                  rdd1010716@est.univalle.edu
                 </a>
+                
+              </li>
+              <li className="flex items-center gap-3 text-sm text-gray-400">
+                <Mail size={16} className="text-blue-400 flex-shrink-0" />
+                <a href="mailto:activos@univalle.edu" className="hover:text-red-400 transition-colors">
+                  mpn0036072@est.univalle.edu
+                </a>
+                
               </li>
             </ul>
           </div>
@@ -208,7 +219,7 @@ export function Footer() {
 
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <span>Hecho con</span>
-              <Heart size={14} className="text-red-500 animate-pulse" />
+              <Heart size={20} className="text-red-500 animate-pulse" />
               <span>por el equipo de desarrollo</span>
             </div>
 

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, Lock, Mail, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, AlertCircle, Eye, EyeOff, Clock } from 'lucide-react';
 import { Button } from '../components/Button';
 
 export function LoginPage() {
@@ -9,8 +9,18 @@ export function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [currentTime, setCurrentTime] = useState(new Date());
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // Actualizar reloj cada segundo
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,20 +42,66 @@ export function LoginPage() {
         }
     };
 
+    const formatTime = (date) => {
+        return date.toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    };
+
+    const formatDate = (date) => {
+        return date.toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
-                {/* Logo/Header */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-lg mb-4">
-                        <Lock className="text-indigo-900" size={32} />
+        <div
+            className="min-h-screen flex items-center justify-center p-4 relative"
+            style={{
+                backgroundImage: 'url(/FondoLogin.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }}
+        >
+            {/* Overlay para oscurecer el fondo */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+            {/* Reloj discreto en esquina inferior izquierda */}
+            <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-md rounded-lg shadow-lg px-4 py-2 z-10">
+                <div className="flex items-center gap-2">
+                    <Clock className="text-red-900" size={16} />
+                    <div>
+                        <p className="text-sm font-semibold text-gray-900">{formatTime(currentTime)}</p>
+                        <p className="text-xs text-gray-600 capitalize">{formatDate(currentTime)}</p>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">Sistema de Inventario</h1>
-                    <p className="text-indigo-200">Ingrese sus credenciales para continuar</p>
+                </div>
+            </div>
+
+            <div className="w-full max-w-md relative z-10">
+                {/* Logo Univalle */}
+                <div className="text-center mb-6">
+                    <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 mb-4">
+                        <div className="flex items-center justify-center mb-4">
+                            <img
+                                src="/LogoUnivalle.png"
+                                alt="Univalle Logo"
+                                className="h-24 w-24 object-contain"
+                            />
+                        </div>
+                        <h1 className="text-3xl font-bold text-red-900 mb-2">Univalle</h1>
+                        <div className="h-1 w-20 bg-gradient-to-r from-red-900 to-red-700 mx-auto rounded-full mb-3"></div>
+                        <h2 className="text-xl font-semibold text-gray-800">Sistema de Inventario</h2>
+                        <p className="text-sm text-gray-600 mt-2">Ingrese sus credenciales para continuar</p>
+                    </div>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-white rounded-2xl shadow-2xl p-8">
+                <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {/* Error Message */}
                         {error && (
@@ -73,7 +129,7 @@ export function LoginPage() {
                                     required
                                     value={correo}
                                     onChange={(e) => setCorreo(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-900/20 focus:border-indigo-900 transition-colors"
+                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors"
                                     placeholder="correo@ejemplo.com"
                                     autoComplete="email"
                                 />
@@ -87,18 +143,25 @@ export function LoginPage() {
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="text-gray-400" size={20} />
+                                    <Mail className="text-gray-400" size={20} />
                                 </div>
                                 <input
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-900/20 focus:border-indigo-900 transition-colors"
+                                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900/20 focus:border-red-900 transition-colors"
                                     placeholder="••••••••"
                                     autoComplete="current-password"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                             </div>
                         </div>
 
@@ -122,8 +185,8 @@ export function LoginPage() {
                 </div>
 
                 {/* Additional Info */}
-                <div className="mt-6 text-center">
-                    <p className="text-sm text-indigo-200">
+                <div className="mt-6 text-center bg-white/90 backdrop-blur-md rounded-lg p-3 shadow-lg">
+                    <p className="text-sm text-gray-700 font-medium">
                         ¿Problemas para acceder? Contacte al administrador del sistema
                     </p>
                 </div>

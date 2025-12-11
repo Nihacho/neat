@@ -1,10 +1,14 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export function Card({ children, className, ...props }) {
+export function Card({ children, className, hover = false, ...props }) {
   return (
     <div
-      className={clsx('bg-white rounded-xl border border-gray-100 shadow-sm', className)}
+      className={clsx(
+        'bg-white rounded-xl border border-gray-100 shadow-sm transition-all duration-300',
+        hover && 'hover:shadow-md hover:border-gray-200 hover:-translate-y-0.5',
+        className
+      )}
       {...props}
     >
       {children}

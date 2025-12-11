@@ -11,7 +11,6 @@ import { PersonasPage } from './pages/PersonasPage';
 import { PrestamosPage } from './pages/PrestamosPage';
 import { UbicacionesPage } from './pages/UbicacionesPage';
 import { ReportesPage } from './pages/ReportesPage';
-import { UsuariosPage } from './pages/UsuariosPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,8 +38,7 @@ function App() {
               <Route path="personas" element={<ProtectedRoute requiredLevel={1}><PersonasPage /></ProtectedRoute>} />
               <Route path="prestamos" element={<ProtectedRoute requiredLevel={1}><PrestamosPage /></ProtectedRoute>} />
               <Route path="ubicaciones" element={<ProtectedRoute requiredLevel={1}><UbicacionesPage /></ProtectedRoute>} />
-              <Route path="reportes" element={<ProtectedRoute requiredLevel={1}><ReportesPage /></ProtectedRoute>} />
-              <Route path="usuarios" element={<ProtectedRoute requiredLevel={1}><UsuariosPage /></ProtectedRoute>} />
+              <Route path="reportes" element={<ProtectedRoute requiredLevel={2}><ReportesPage /></ProtectedRoute>} />
             </Route>
 
             {/* Redirect unknown routes to login */}

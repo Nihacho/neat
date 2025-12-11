@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Box, Users, ClipboardList, MapPin, FileText, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, Box, Users, ClipboardList, MapPin, FileText, LogOut } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import { PERMISSION_LEVELS } from '../lib/permissionUtils';
@@ -11,8 +11,7 @@ const navItems = [
   { icon: Users, label: 'Personas', to: '/personas', requiredLevel: 1 },
   { icon: ClipboardList, label: 'Préstamos', to: '/prestamos', requiredLevel: 1 },
   { icon: MapPin, label: 'Ubicaciones', to: '/ubicaciones', requiredLevel: 1 },
-  { icon: FileText, label: 'Reportes', to: '/reportes', requiredLevel: 1 },
-  { icon: Shield, label: 'Usuarios', to: '/usuarios', requiredLevel: 1 },
+  { icon: FileText, label: 'Reportes', to: '/reportes', requiredLevel: 2 },
 ];
 
 export function Sidebar() {
@@ -36,7 +35,7 @@ export function Sidebar() {
       <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-red-900 to-red-800">
         <div className="flex items-center gap-3">
           <img
-            src="/univalle-logo.png"
+            src="/LogoUnivalle.png"
             alt="Univalle Logo"
             className="w-12 h-12 rounded-full bg-white p-1 shadow-md"
           />
